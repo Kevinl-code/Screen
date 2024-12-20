@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Front Page</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        .front-page {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(45deg, #ff7eb3, #8fceff, #a7ff83, #ffdf65);
+            background-size: 400% 400%;
+            animation: gradientShift 10s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .front-page h1 {
+            font-size: 2.5rem;
+            color: #fff;
+        }
+
+        .front-page h2 {
+            font-size: 2rem;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            border-right: 2px solid rgba(255, 255, 255, 0.7);
+        }
+
+        .front-page button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .front-page button:hover {
+            background-color: #0056b3;
+        }
+
+        .layout {
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #343a40;
+            color: white;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar h3 {
+            margin: 0 0 20px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .sidebar a:hover {
+            background-color: #495057;
+        }
+
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input[type="file"],
+        .form-group input[type="text"],
+        .form-group input[type="color"],
+        .form-group button,
+        .form-group select {
+            padding: 10px;
+            font-size: 14px;
+            width: 100%;
+            max-width: 300px;
+            margin-top: 5px;
+        }
+
+        .form-group input[type="checkbox"] {
+            margin-right: 10px;
+        }
+
+        .form-group input[type="number"] {
+            width: 100px;
+            margin-right: 10px;
+        }
+
+        .file-name {
+            margin-top: 10px;
+            color: #333;
+            font-style: italic;
+        }
+
+        .success-message {
+            color: green;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Front Page -->
+    <div id="front-page" class="front-page">
+        <h1>Welcome</h1>
+        <h2 id="animated-text"></h2>
+        <button onclick="goToMainMenu()">Get Started</button>
+    </div>
+
+    <!-- Main Menu Layout -->
+    <div id="main-menu" class="layout hidden">
+        <div class="sidebar">
+            <h3>Main Menu</h3>
+            <a href="#" onclick="showPage('import-data')">Import Data</a>
+            <a href="#" onclick="showPage('category')">Category</a>
+            <a href="#" onclick="showPage('charts')">Charts</a>
+            <a href="#" onclick="showPage('export')">Export</a>
+        </div>
+        <div id="content" class="content">
+            <h2>Welcome to the Main Menu</h2>
+            <p>Select an option from the sidebar to navigate.</p>
+        </div>
+    </div>
+
+    <script>
+        const textToAnimate = "Comprehensive Data Visualization Solution in recent trends of CS";
+        const animatedTextElement = document.getElementById("animated-text");
+
+        let charIndex = 0;
+
+        function typeText() {
+            if (charIndex < textToAnimate.length) {
+                animatedTextElement.textContent += textToAnimate.charAt(charIndex);
+                charIndex++;
+                setTimeout(typeText, 100);
+            } else {
+                setTimeout(() => {
+                    charIndex = 0;
+                    animatedTextElement.textContent = "";
+                    typeText();
+                }, 2000);
+            }
+        }
+
+        typeText();
+
+        function goToMainMenu() {
+            document.getElementById('front-page').classList.add('hidden');
+            document.getElementById('main-menu').classList.remove('hidden');
+        }
+
+        function showPage(page) {
+            const content = document.getElementById('content');
+            let pageContent = '';
+
+            if (page === 'import-data') {
+                pageContent = `
+                    <h2>Import Data</h2>
+                    <div class="form-group">
+                        <label for="fileUploader">Choose an Excel file</label>
+                        <input type="file" id="fileUploader" accept=".xls, .xlsx">
+                        <div id="fileName" class="file-name"></div>
+                    </div>
+                    <div class="form-group">
+                        <button id="importButton" onclick="prepareImport()">Import Data</button>
+                    </div>
+                    <div id="tableNameSection" class="form-group hidden">
+                        <label for="tableName">Enter table name to import</label>
+                        <input type="text" id="tableName" placeholder="Table Name">
+                        <button id="startImportButton" onclick="startImport()">Start Import</button>
+                    </div>
+                    <div id="successMessage" class="success-message hidden"></div>
+                `;
+            } else if (page === 'category') {
+                pageContent = `
+                    <h2>Category</h2>
+                    <div class="form-group">
+                        <label for="tableDropdown">Selected Table</label>
+                        <select id="tableDropdown" class="form-control"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="yearSelector">Select Year</label>
+                        <div>
+                            <input type="checkbox" id="allYearsCheckbox" onchange="handleYearSelection()"> All Years
+                            <input type="checkbox" class="year-checkbox" value="2023" onchange="handleYearSelection()"> 2023
+                            <input type="checkbox" class="year-checkbox" value="2024" onchange="handleYearSelection()"> 2024
+                            <input type="checkbox" class="year-checkbox" value="2025" onchange="handleYearSelection()"> 2025
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="chartTypeSelector">Select Chart Type</label>
+                        <select id="chartTypeSelector">
+                            <option value="pie">Pie Chart</option>
+                            <option value="line">Line Chart</option>
+                            <option value="bar">Bar Chart</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="colorPicker">Select Color</label>
+                        <input type="color" id="colorPicker" value="#000000">
+                    </div>
+                    <div class="form-group">
+                        <label for="xAxisSelector">Select X Axis</label>
+                        <select id="xAxisSelector" onchange="syncAxisSelection('x')">
+                            <option value="op">OP</option>
+                            <option value="po">PO</option>
+                            <option value="lp">LP</option>
+                            <option value="ml">ML</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="yAxisSelector">Select Y Axis</label>
+                        <select id="yAxisSelector" onchange="syncAxisSelection('y')">
+                            <option value="op">OP</option>
+                            <option value="po">PO</option>
+                            <option value="lp">LP</option>
+                            <option value="ml">ML</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <input type="checkbox" id="showGrid"> Show Grid
+                    </div>
+                    <button onclick="generateChartForCategory()">Generate Chart</button>
+                `;
+                setTimeout(() => {
+                    populateCategoryDropdown();
+                }, 0); // Populate after rendering
+            } else if (page === 'charts') {
+                pageContent = `<h2>Charts</h2>`;
+            }
+
+            content.innerHTML = pageContent;
+        }
+
+        function prepareImport() {
+            const fileInput = document.getElementById('fileUploader');
+            const fileNameDisplay = document.getElementById('fileName');
+            const tableNameSection = document.getElementById('tableNameSection');
+
+            if (fileInput.files.length > 0) {
+                const fileName = fileInput.files[0].name;
+                fileNameDisplay.textContent = `File Selected: ${fileName}`;
+                tableNameSection.classList.remove('hidden');
+            } else {
+                fileNameDisplay.textContent = 'No file selected.';
+            }
+        }
+
+        function startImport() {
+            const tableNameInput = document.getElementById('tableName').value;
+            const successMessage = document.getElementById('successMessage');
+
+            if (tableNameInput) {
+                saveTableNameLocally(tableNameInput);
+                successMessage.textContent = `Data uploaded successfully to table: ${tableNameInput}`;
+                successMessage.classList.remove('hidden');
+            } else {
+                alert('Please enter a table name.');
+            }
+        }
+
+        function saveTableNameLocally(tableName) {
+            const tableNames = JSON.parse(localStorage.getItem('tableNames')) || [];
+            if (!tableNames.includes(tableName)) {
+                tableNames.push(tableName);
+                localStorage.setItem('tableNames', JSON.stringify(tableNames));
+            }
+        }
+
+        function populateCategoryDropdown() {
+            const tableNames = JSON.parse(localStorage.getItem('tableNames')) || [];
+            const dropdown = document.getElementById('tableDropdown');
+
+            dropdown.innerHTML = ''; // Clear existing options
+
+            tableNames.forEach(tableName => {
+                const option = document.createElement('option');
+                option.value = tableName;
+                option.textContent = tableName;
+                dropdown.appendChild(option);
+            });
+
+            if (tableNames.length === 0) {
+                const noTablesOption = document.createElement('option');
+                noTablesOption.textContent = 'No tables available';
+                dropdown.appendChild(noTablesOption);
+            }
+        }
+
+        function handleYearSelection() {
+            const allYearsCheckbox = document.getElementById('allYearsCheckbox');
+            const yearCheckboxes = document.querySelectorAll('.year-checkbox');
+
+            if (allYearsCheckbox.checked) {
+                yearCheckboxes.forEach(checkbox => (checkbox.disabled = true));
+            } else {
+                yearCheckboxes.forEach(checkbox => (checkbox.disabled = false));
+            }
+        }
+
+        function syncAxisSelection(axis) {
+            const xAxisSelector = document.getElementById('xAxisSelector');
+            const yAxisSelector = document.getElementById('yAxisSelector');
+
+            const xValue = xAxisSelector.value;
+            const yValue = yAxisSelector.value;
+
+            const disableOptions = (selector, valueToDisable) => {
+                Array.from(selector.options).forEach(option => {
+                    option.disabled = option.value === valueToDisable;
+                });
+            };
+
+            disableOptions(yAxisSelector, xValue);
+            disableOptions(xAxisSelector, yValue);
+        }
+
+        function generateChartForCategory() {
+            const year = document.getElementById('yearSelector').value;
+            const chartType = document.getElementById('chartTypeSelector').value;
+            const xAxis = document.getElementById('xAxisSelector').value;
+            const yAxis = document.getElementById('yAxisSelector').value;
+            const color = document.getElementById('colorPicker').value;
+            const showGrid = document.getElementById('showGrid').checked;
+
+            console.log({ year, chartType, xAxis, yAxis, color, showGrid });
+        }
+    </script>
+</body>
+</html>
